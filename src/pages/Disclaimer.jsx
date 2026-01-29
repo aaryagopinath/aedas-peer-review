@@ -16,7 +16,7 @@ export default function Disclaimer({ user, onStart }) {
     >
       <div
         style={{
-          width: "min(680px, 100%)",
+          width: "min(690px, 100%)",
           background: "white",
           border: "1px solid var(--border)",
           borderRadius: "var(--radius-lg)",
@@ -46,7 +46,8 @@ export default function Disclaimer({ user, onStart }) {
             lineHeight: 1.7,
           }}
         >
-          Your feedback is very important to make Aedas DXB a better place.
+          We want Aedas DXB to be one of the best practices in the Middle
+          East.{" "}
         </p>
 
         <hr
@@ -71,8 +72,9 @@ export default function Disclaimer({ user, onStart }) {
               lineHeight: 1.75,
             }}
           >
-            Please be honest—this is confidential. We all have room to grow.
-            This assessment helps identify where improvements can be made.
+            We need your honest feedback to improve how we work together. Some
+            behaviors and attitudes must change, and your input will help us act
+            in the right way.
           </div>
 
           <div
@@ -82,8 +84,9 @@ export default function Disclaimer({ user, onStart }) {
               lineHeight: 1.75,
             }}
           >
-            Directors and senior leaders are included as well, so please feel
-            free to speak openly.
+            All responses are confidential. Individual comments will not be
+            shared. Feedback will be used to support improvement through
+            coaching and training. Please be honest.
           </div>
         </div>
 
