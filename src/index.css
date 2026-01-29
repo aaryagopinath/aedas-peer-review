@@ -1,87 +1,563 @@
 :root {
-  --primary: #1de9b6;
-  --danger: #ff5252;
-  --warning: #ffca28;
-  --info: #2979ff;
-  --success: #00e676;
-  --dark-bg: #121212;
-  --card-fill: #1e1e1e;
-  --text-white: #ffffff;
-  --text-dim: #b0b0b0;
+  /* Surfaces */
+  --bg-main: #ffffff;
+  --bg-soft: #f6f7f8;
+  --bg-tint: #eef4f3;
+
+  /* Typography */
+  --text-primary: #111111;
+  --text-secondary: #4b4b4b;
+  --text-muted: #7a7a7a;
+
+  /* Accent */
+  --teal: #6f9f9a;
+  --teal-ink: #2f5a56;
+  --teal-soft: #e3efed;
+
+  /* UI */
+  --border: #e6e6e6;
+  --border-strong: #d7d7d7;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--dark-bg);
-  color: var(--text-white);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  background: var(--bg-soft);
+  color: var(--text-primary);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* App shell */
+.app-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
-/* Common Components */
-.input-card {
-  background-color: var(--card-fill);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  border: 1px solid #333;
-  max-width: 500px;
-  width: 90%;
-  margin: 2rem auto;
-  text-align: center;
+.content {
+  flex: 1;
+  padding: 28px 48px 64px;
 }
 
-.btn {
-  background-color: transparent;
-  border: 2px solid var(--primary);
-  color: var(--primary);
-  padding: 10px 30px;
-  margin: 10px;
-  border-radius: 25px;
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Navbar */
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+}
+
+.nav-link {
+  border: 0;
+  background: transparent;
+  padding: 8px 2px;
+  font-size: 14px;
+  color: var(--text-muted);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: 0.2s;
+  border-bottom: 2px solid transparent;
 }
 
-.btn:hover {
-  background-color: var(--primary);
-  color: #000;
+.nav-link.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--teal);
 }
+
+/* Buttons */
+.btn {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    transform 120ms ease,
+    background 120ms ease,
+    border 120ms ease,
+    opacity 120ms ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
 .btn:disabled {
-  opacity: 0.3;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
-input {
-  padding: 12px;
-  border-radius: 5px;
-  border: 1px solid #555;
-  background: #2a2a2a;
-  color: white;
-  width: 80%;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  text-align: center;
+.btn-primary {
+  background: var(--teal);
+  color: #ffffff;
 }
 
-.profile-img-wrap {
-  width: 140px;
-  height: 140px;
-  margin: 0 auto 12px auto;
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid #333;
-  background: #111;
+.btn-secondary {
+  background: var(--bg-main);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
 }
 
-.profile-img {
+.btn-quiet {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-muted);
+}
+
+/* Inputs */
+.field {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.input {
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.input:focus {
+  border-color: #b6d2ce;
+  box-shadow: 0 0 0 4px rgba(111, 159, 154, 0.18);
+}
+
+/* Card */
+.card {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* Login */
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 48px;
+  background: linear-gradient(180deg, #ffffff 0%, var(--bg-soft) 100%);
+}
+
+.auth-card {
+  width: 460px;
+  padding: 36px;
+}
+
+.auth-title {
+  margin: 0 0 10px;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-subtitle {
+  margin: 0 0 24px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.auth-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.auth-footnote {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Assessment */
+.assess-header {
+  max-width: 840px;
+  margin: 24px auto 16px;
   width: 100%;
+  padding: 18px 20px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 12px; /* square with soft corners */
+  border: 1px solid var(--border-light);
+}
+
+.person-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.person-role {
+  font-size: 14px;
+  margin-top: 4px;
+  color: var(--text-secondary);
+}
+
+.assess-meta {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
+.pill {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--teal-ink);
+  background: var(--teal-soft);
+  border: 1px solid #cfe1de;
+}
+
+.progress {
+  width: 220px;
+  height: 6px;
+  background: #eef0f1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress > div {
   height: 100%;
-  object-fit: cover; /* key */
-  object-position: top; /* or center */
+  background: var(--teal);
+}
+
+.section-title {
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+
+.actions-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.empty-state {
+  padding: 28px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+/* Smooth step transition */
+.step-wrap {
+  position: relative;
+}
+
+.step-panel {
+  animation: stepIn 220ms ease both;
+}
+
+@keyframes stepIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(1px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Optional: make button clicks feel more responsive */
+
+/* =========================
+   Assessment – Question Panel
+   ========================= */
+
+.assess-body {
+  display: flex;
+  justify-content: center;
+}
+
+/* Square, focused card like Disclaimer */
+.question-card {
+  width: 520px;
+  max-width: 100%;
+  padding: 36px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin: 0 auto 24px;
+}
+
+/* Typography hierarchy */
+.question-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.question-help {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0 0 24px;
+}
+
+/* =========================
+   Choice Buttons (FIXED)
+   ========================= */
+
+.choice-row {
+  display: flex;
+  gap: 12px;
+}
+
+.choice {
+  min-width: 96px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 120ms ease;
+}
+
+.choice:hover {
+  border-color: var(--teal);
+}
+
+.choice:active {
+  transform: translateY(1px);
+}
+
+/* Selected state */
+.choice.selected {
+  background: var(--teal-soft);
+  border-color: var(--teal);
+  color: var(--teal-ink);
+}
+
+/* One-card criteria layout */
+.criteria-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.criteria-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.criteria-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.criteria-text {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Comment slide feel (works with your step animation) */
+.comment-card {
+  animation: commentIn 260ms ease both;
+}
+
+@keyframes commentIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.comment-box {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-main);
+  outline: none;
+  resize: vertical;
+}
+
+.comment-box:focus {
+  border-color: #b6d2ce;
+  box-shadow: 0 0 0 4px rgba(111, 159, 154, 0.18);
+}
+
+/* Header: use space better + bigger avatar */
+.assess-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 22px;
+}
+
+.avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+/* Meta block: keep pill only. Keep progress aligned. */
+.assess-meta {
+  min-width: 240px;
+  justify-items: end;
+}
+
+/* Criteria: give button area breathing space */
+.criteria-list {
+  margin-top: 18px;
+  margin-bottom: 22px; /* space before actions */
+}
+
+/* Actions row: proper separation + alignment */
+.actions-row {
+  margin-top: 26px; /* more breathing room */
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  justify-content: flex-end;
+}
+
+/* In criteria screen: button should be full-height normal and not cramped */
+.actions-row .btn {
+  min-width: 140px;
+}
+
+/* Negative / "No" selection styling */
+.choice.selected-no {
+  background: #fdecec;
+  border-color: #e17878;
+  color: #8a2f2f;
+}
+
+/* Optional: slightly stronger hover for negative */
+.choice.selected-no:hover {
+  border-color: #d25f5f;
+}
+/* Login – Logo */
+.auth-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.auth-logo {
+  height: 100px; /* adjust if needed */
+  width: auto;
+  /* margin-bottom: 10px; */
+}
+
+.auth-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+/* Navbar – Logo */
+/* Navbar – Logo (fit inside 64px bar) */
+/* Navbar */
+.nav {
+  min-height: 72px; /* give breathing room */
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-inner {
+  min-height: 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand container */
+.nav-brand {
+  display: flex;
+  align-items: center;
+}
+
+/* Logo – no scaling, no cropping */
+.nav-logo {
+  height: 56px; /* visually strong */
+  width: auto;
   display: block;
+  object-fit: contain;
 }

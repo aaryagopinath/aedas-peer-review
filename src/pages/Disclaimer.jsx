@@ -4,32 +4,32 @@ export default function Disclaimer({ user, onStart }) {
   return (
     <div
       style={{
-        minHeight: "calc(100vh - 80px)", // adjust if your navbar height differs
+        minHeight: "calc(100vh - 80px)",
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "center",
-        paddingTop: 70,
+        paddingTop: 80,
         paddingLeft: 16,
         paddingRight: 16,
+        background: "var(--bg-soft)",
       }}
     >
       <div
         style={{
           width: "min(560px, 100%)",
-          background: "#1e1e1e",
-          border: "1px solid #333",
-          borderRadius: 14,
-          padding: 26,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.45)",
+          background: "white",
+          border: "1px solid var(--border-light)",
+          borderRadius: "var(--radius-lg)",
+          padding: 32,
+          boxShadow: "var(--shadow-soft)",
         }}
       >
         <h2
           style={{
             margin: 0,
             textAlign: "center",
-            color: "var(--primary)",
-            fontWeight: 800,
-            letterSpacing: 0.2,
+            color: "var(--text-primary)",
+            fontWeight: 600,
           }}
         >
           Hello {user?.name || "there"}!
@@ -37,44 +37,85 @@ export default function Disclaimer({ user, onStart }) {
 
         <p
           style={{
-            marginTop: 10,
+            marginTop: 12,
             textAlign: "center",
-            color: "#bdbdbd",
+            color: "var(--text-secondary)",
             fontSize: "0.95rem",
+            lineHeight: 1.6,
           }}
         >
-          Your feedback is very important to make Aedas Dxb a better working
-          place
+          Your feedback is very important to making Aedas DXB a better place to
+          work.
         </p>
 
-        <hr style={{ borderColor: "#2d2d2d", margin: "18px 0" }} />
+        <hr
+          style={{
+            border: "none",
+            borderTop: "1px solid var(--border-light)",
+            margin: "24px 0",
+          }}
+        />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div>
-            <div style={{ color: "#eaeaea", fontWeight: 800 }}>1. Honesty</div>
-            <div style={{ color: "#bdbdbd", marginTop: 4 }}>
-              Please be honest
+            <div
+              style={{
+                color: "var(--text-primary)",
+                fontWeight: 600,
+              }}
+            >
+              Anonymity & Confidentiality
+            </div>
+            <div
+              style={{
+                color: "var(--text-secondary)",
+                marginTop: 6,
+                lineHeight: 1.6,
+              }}
+            >
+              This assessment is anonymous and confidential. Please be honest.
+              We all have room to grow, and your feedback helps identify where
+              improvements can be made.
             </div>
           </div>
 
           <div>
-            <div style={{ color: "#eaeaea", fontWeight: 800 }}>2. Growth</div>
-            <div style={{ color: "#bdbdbd", marginTop: 4 }}>
-              This assessment will help us identify staff that needs to improve
+            <div
+              style={{
+                color: "var(--text-primary)",
+                fontWeight: 600,
+              }}
+            >
+              Open Feedback Culture
+            </div>
+            <div
+              style={{
+                color: "var(--text-secondary)",
+                marginTop: 6,
+                lineHeight: 1.6,
+              }}
+            >
+              Directors and senior leaders are included in this process as well,
+              so please feel free to share your feedback openly and
+              constructively.
             </div>
           </div>
         </div>
 
         <div
-          style={{ display: "flex", justifyContent: "center", marginTop: 22 }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: 32,
+          }}
         >
           <button
-            className="btn"
+            className="button-primary"
             onClick={onStart}
             style={{
-              padding: "10px 28px",
+              padding: "10px 32px",
               borderRadius: 22,
-              fontWeight: 800,
+              fontWeight: 500,
             }}
           >
             Start Assessment
