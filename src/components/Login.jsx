@@ -31,7 +31,7 @@ const Login = ({ onLogin }) => {
       <div className="card auth-card">
         <div className="auth-logo-wrap">
           <img src="/LogoPNG.png" alt="AEDAS" className="auth-logo" />
-          <p className="auth-subtitle">Performance Review</p>
+          <p className="auth-subtitle">Aedas Performance Review</p>
         </div>
 
         <div className="field">

@@ -8,11 +8,10 @@ const Assessment = ({ reviewer }) => {
   const [step, setStep] = useState("loading"); // loading, q1, q2, q3, comments, finished, no-cycle
 
   const [currentReview, setCurrentReview] = useState({
-    happy: false,
+    happy: null,
     answers: [null, null, null],
   });
 
-  // New: comment state
   const [commentText, setCommentText] = useState("");
   const [lastInsertedReviewId, setLastInsertedReviewId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -77,13 +76,11 @@ const Assessment = ({ reviewer }) => {
     setCurrentReview({ ...currentReview, answers: newAnswers });
   };
 
-  // Stored sub-scores: 0 or 20 each
   const aspectScore = (answer, happy) => {
     if (answer === null) return 0;
     return happy ? (answer ? 20 : 0) : answer ? 0 : 20;
   };
 
-  // NEW: Submit review but do NOT go next person yet
   const submitReview = async () => {
     const p = colleagues[currentIndex];
     const { happy, answers } = currentReview;
@@ -119,26 +116,21 @@ const Assessment = ({ reviewer }) => {
 
     if (error) {
       console.error(error);
-      // if insert fails, stay on q3
       return;
     }
 
     setLastInsertedReviewId(data?.id || null);
     setCommentText("");
-    setStep("comments"); // slide-in comments next
+    setStep("comments");
   };
 
-  // NEW: Save comment (optional), then next person
   const submitCommentAndContinue = async () => {
-    // If no comment, just continue
     const text = commentText.trim();
     if (!text) {
       nextPerson();
       return;
     }
 
-    // If you have a "comments" column in "reviews", this will work.
-    // If not, it will error. In that case, just skip saving comment and continue.
     try {
       setIsSaving(true);
 
@@ -149,7 +141,7 @@ const Assessment = ({ reviewer }) => {
           .eq("id", lastInsertedReviewId);
 
         if (error) {
-          console.warn("No comments column found or update failed:", error);
+          console.warn("Comment update failed:", error);
         }
       }
     } finally {
@@ -166,6 +158,12 @@ const Assessment = ({ reviewer }) => {
     const newList = [...colleagues];
     newList.splice(currentIndex, 1);
     setColleagues(newList);
+
+    // ✅ Reset review state so nothing stays highlighted
+    setCurrentReview({
+      happy: null,
+      answers: [null, null, null],
+    });
 
     setLastInsertedReviewId(null);
     setCommentText("");
@@ -206,41 +204,46 @@ const Assessment = ({ reviewer }) => {
     );
 
   const p = colleagues[currentIndex];
+  const imgSrc = p.image_url?.startsWith("/") ? p.image_url : `/${p.image_url}`;
+
   const q3Complete = !currentReview.answers.includes(null);
 
   const q3Labels = currentReview.happy
-    ? ["Good Attitude", "Effective Communication", "Strong Technical Skills"]
-    : ["Poor Attitude", "Poor Communication", "Weak Technical Skills"];
+    ? [
+        "Good Attitude / Team Player",
+        "Good Communication / Leadership",
+        "Strong Skills and Knowledge",
+      ]
+    : [
+        "Negative Attitude / Lack of teamwork",
+        "Poor Communication / Weak Leadership",
+        "Limited Skills and knowledge",
+      ];
 
-  const imgSrc = p.image_url?.startsWith("/") ? p.image_url : `/${p.image_url}`;
-
-  const total = colleagues.length;
+  // Helper: shared top section (avatar + name + role)
+  const PersonHeader = () => (
+    <>
+      <img className="person-avatar-lg" src={imgSrc} alt={p.name} />
+      <h2 className="person-name-lg">{p.name}</h2>
+      <div className="person-role-lg">{p.role}</div>
+      <div className="question-divider" />
+    </>
+  );
 
   return (
     <div className="page">
-      <div className="card assess-header">
-        <div className="person">
-          <img className="avatar" src={imgSrc} alt={p.name} />
-          <div>
-            <h2 className="person-name">{p.name}</h2>
-            <div className="person-role">{p.role}</div>
-          </div>
-        </div>
-      </div>
-
       <div className="assess-body">
         <div className="step-wrap">
           <div key={step} className="step-panel">
             {step === "q1" && (
-              <div className="question-card">
-                <h3 className="question-title">
+              <div className="person-question-card">
+                <PersonHeader />
+
+                <h3 className="question-title center">
                   Have you worked with this colleague?
                 </h3>
-                <p className="question-help">
-                  If you have not collaborated directly, you can skip and move
-                  to the next person.
-                </p>
-                <div className="choice-row">
+
+                <div className="choice-row center">
                   <button
                     className="choice"
                     onClick={() => handleQ1(true)}
@@ -260,24 +263,24 @@ const Assessment = ({ reviewer }) => {
             )}
 
             {step === "q2" && (
-              <div className="question-card">
-                <h3 className="question-title">
-                  Would you work with them again?
+              <div className="person-question-card">
+                <PersonHeader />
+
+                <h3 className="question-title center">
+                  It was a positive experience and good results?
                 </h3>
-                <p className="question-help">
-                  Choose the option that best reflects your willingness to
-                  collaborate in future.
-                </p>
-                <div className="choice-row">
+
+                <div className="choice-row center">
                   <button
-                    className="choice"
+                    className={`choice ${currentReview.happy === true ? "selected" : ""}`}
                     onClick={() => handleQ2(true)}
                     type="button"
                   >
                     Yes
                   </button>
+
                   <button
-                    className="choice"
+                    className={`choice ${currentReview.happy === false ? "selected-no" : ""}`}
                     onClick={() => handleQ2(false)}
                     type="button"
                   >
@@ -288,22 +291,15 @@ const Assessment = ({ reviewer }) => {
             )}
 
             {step === "q3" && (
-              <div className="question-card">
-                <h3 className="question-title">Criteria</h3>
-                <p className="question-help">
-                  Please answer all three criteria. This section is mandatory.
-                </p>
-                {/* <p
-                  style={{
-                    margin: "0 0 14px",
-                    color: "var(--text-muted)",
-                    fontSize: 13,
-                  }}
-                >
-                  Please answer all three criteria. This section is mandatory.
-                </p> */}
+              <div className="person-question-card">
+                <PersonHeader />
 
-                <div className="criteria-list">
+                <h3 className="question-title center">Why?</h3>
+
+                <div
+                  className="criteria-list"
+                  style={{ width: "100%", marginTop: 18 }}
+                >
                   {q3Labels.map((label, idx) => (
                     <div key={label} className="criteria-row">
                       <div className="criteria-text">{label}</div>
@@ -315,7 +311,6 @@ const Assessment = ({ reviewer }) => {
                         >
                           Yes
                         </button>
-
                         <button
                           type="button"
                           className={`choice ${currentReview.answers[idx] === false ? "selected-no" : ""}`}
@@ -328,7 +323,10 @@ const Assessment = ({ reviewer }) => {
                   ))}
                 </div>
 
-                <div className="actions-row">
+                <div
+                  className="actions-row"
+                  style={{ justifyContent: "center" }}
+                >
                   <button
                     className="btn btn-primary"
                     disabled={!q3Complete || isSaving}
@@ -342,11 +340,14 @@ const Assessment = ({ reviewer }) => {
             )}
 
             {step === "comments" && (
-              <div className="question-card comment-card">
-                <h3 className="question-title">
+              <div className="person-question-card comment-card">
+                <PersonHeader />
+
+                <h3 className="question-title center">
                   Additional Comments & Concerns
                 </h3>
-                <p className="question-help">
+
+                <p className="question-help" style={{ textAlign: "center" }}>
                   Is there anything else you would like to share? If there are
                   specific incidents, conflicts, or concerns you have been
                   afraid to raise personally, please write them here. We are
@@ -362,6 +363,7 @@ const Assessment = ({ reviewer }) => {
                   placeholder="Write your comments here (optional)…"
                   rows={6}
                 />
+
                 <div
                   style={{
                     display: "flex",
@@ -372,7 +374,7 @@ const Assessment = ({ reviewer }) => {
                   <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
                     Max {COMMENT_MAX} characters.
                   </div>
-                  <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                  <div style={{ fontSize: 15, color: "var(--text-muted)" }}>
                     {commentText.length}/{COMMENT_MAX}
                   </div>
                 </div>

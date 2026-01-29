@@ -339,12 +339,13 @@ body {
   font-size: 20px;
   font-weight: 600;
   margin: 0 0 10px;
+  margin-bottom: 24px;
   line-height: 1.35;
   color: var(--text-primary);
 }
 
 .question-help {
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.6;
   color: var(--text-secondary);
   margin: 0 0 24px;
@@ -440,7 +441,7 @@ body {
   border-radius: var(--radius-md);
   padding: 14px 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1.6;
   color: var(--text-primary);
   background: var(--bg-main);
@@ -514,6 +515,8 @@ body {
 }
 
 .auth-logo {
+  margin-bottom: 20px;
+
   height: 100px; /* adjust if needed */
   width: auto;
   /* margin-bottom: 10px; */
@@ -560,4 +563,127 @@ body {
   width: auto;
   display: block;
   object-fit: contain;
+}
+
+/* =========================
+   Centered Person + Question Card
+   ========================= */
+
+.person-question-card {
+  width: 520px;
+  max-width: 100%;
+  padding: 44px;
+  margin: 0 auto;
+  text-align: center;
+
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* Bigger, confident avatar */
+.person-avatar-lg {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  margin-bottom: 18px;
+}
+
+/* Name & role hierarchy */
+.person-name-lg {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.person-role-lg {
+  margin-top: 4px;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+/* Visual separation */
+.question-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 28px 0;
+}
+
+/* Center helpers */
+.center {
+  justify-content: center;
+  text-align: center;
+}
+/* Brand layout: logo + title */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 64px;
+  min-width: 240px;
+  color: var(--text-primary);
+}
+
+/* Logo sizing: never crop, never exceed navbar height */
+.nav-logo {
+  height: 60px; /* good inside 64px navbar */
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Text next to logo */
+.nav-titlewrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.nav-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.nav-subtitle {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+/* Login – Logo */
+.auth-logo {
+  height: 110px; /* slightly larger, still safe */
+  width: auto;
+}
+
+.auth-subtitle {
+  margin-top: 10px;
+  font-size: 16px; /* was 14px */
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.label {
+  font-size: 16px; /* was 12px */
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.input {
+  height: 48px; /* was 44px */
+  font-size: 15px; /* NEW */
+  padding: 0 16px;
+}
+.auth-actions .btn {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
 }

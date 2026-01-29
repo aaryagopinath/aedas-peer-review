@@ -8,20 +8,20 @@ export default function Disclaimer({ user, onStart }) {
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "center",
-        paddingTop: 80,
-        paddingLeft: 16,
-        paddingRight: 16,
+        paddingTop: 100,
+        paddingLeft: 20,
+        paddingRight: 20,
         background: "var(--bg-soft)",
       }}
     >
       <div
         style={{
-          width: "min(560px, 100%)",
+          width: "min(680px, 100%)",
           background: "white",
-          border: "1px solid var(--border-light)",
+          border: "1px solid var(--border)",
           borderRadius: "var(--radius-lg)",
-          padding: 32,
-          boxShadow: "var(--shadow-soft)",
+          padding: 44,
+          boxShadow: "var(--shadow)",
         }}
       >
         <h2
@@ -30,6 +30,7 @@ export default function Disclaimer({ user, onStart }) {
             textAlign: "center",
             color: "var(--text-primary)",
             fontWeight: 600,
+            fontSize: "26px",
           }}
         >
           Hello {user?.name || "there"}!
@@ -37,68 +38,52 @@ export default function Disclaimer({ user, onStart }) {
 
         <p
           style={{
-            marginTop: 12,
+            marginTop: 16,
             textAlign: "center",
             color: "var(--text-secondary)",
-            fontSize: "0.95rem",
-            lineHeight: 1.6,
+            fontSize: "18px",
+            fontWeight: "Bold",
+            lineHeight: 1.7,
           }}
         >
-          Your feedback is very important to making Aedas DXB a better place to
-          work.
+          Your feedback is very important to make Aedas DXB a better place.
         </p>
 
         <hr
           style={{
             border: "none",
-            borderTop: "1px solid var(--border-light)",
-            margin: "24px 0",
+            borderTop: "1px solid var(--border)",
+            margin: "32px 0",
           }}
         />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <div>
-            <div
-              style={{
-                color: "var(--text-primary)",
-                fontWeight: 600,
-              }}
-            >
-              Anonymity & Confidentiality
-            </div>
-            <div
-              style={{
-                color: "var(--text-secondary)",
-                marginTop: 6,
-                lineHeight: 1.6,
-              }}
-            >
-              This assessment is anonymous and confidential. Please be honest.
-              We all have room to grow, and your feedback helps identify where
-              improvements can be made.
-            </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 28,
+          }}
+        >
+          <div
+            style={{
+              color: "var(--text-secondary)",
+              fontSize: "18px",
+              lineHeight: 1.75,
+            }}
+          >
+            Please be honest—this is confidential. We all have room to grow.
+            This assessment helps identify where improvements can be made.
           </div>
 
-          <div>
-            <div
-              style={{
-                color: "var(--text-primary)",
-                fontWeight: 600,
-              }}
-            >
-              Open Feedback Culture
-            </div>
-            <div
-              style={{
-                color: "var(--text-secondary)",
-                marginTop: 6,
-                lineHeight: 1.6,
-              }}
-            >
-              Directors and senior leaders are included in this process as well,
-              so please feel free to share your feedback openly and
-              constructively.
-            </div>
+          <div
+            style={{
+              color: "var(--text-secondary)",
+              fontSize: "18px",
+              lineHeight: 1.75,
+            }}
+          >
+            Directors and senior leaders are included as well, so please feel
+            free to speak openly.
           </div>
         </div>
 
@@ -106,16 +91,17 @@ export default function Disclaimer({ user, onStart }) {
           style={{
             display: "flex",
             justifyContent: "center",
-            marginTop: 32,
+            marginTop: 44,
           }}
         >
           <button
-            className="button-primary"
+            className="btn btn-primary"
             onClick={onStart}
             style={{
-              padding: "10px 32px",
-              borderRadius: 22,
-              fontWeight: 500,
+              padding: "14px 42px",
+              borderRadius: 28,
+              fontWeight: 600,
+              fontSize: "16px",
             }}
           >
             Start Assessment

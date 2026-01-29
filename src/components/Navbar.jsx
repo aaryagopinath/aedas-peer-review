@@ -4,8 +4,12 @@ const Navbar = ({ activeTab, setActiveTab, isAdmin }) => {
   return (
     <header className="nav">
       <div className="nav-inner">
-        <div className="nav-brand">
+        <div className="nav-brand" role="banner">
           <img src="/LogoPNG.png" alt="AEDAS" className="nav-logo" />
+          <div className="nav-titlewrap">
+            <div className="nav-title">Aedas Performance Review</div>
+            {/* <div className="nav-subtitle">AEDAS DXB</div> */}
+          </div>
         </div>
 
         <nav className="nav-links" aria-label="Primary">
@@ -16,14 +20,6 @@ const Navbar = ({ activeTab, setActiveTab, isAdmin }) => {
           >
             Assessment
           </button>
-
-          {/* <button
-            className={`nav-link ${activeTab === "scores" ? "active" : ""}`}
-            onClick={() => setActiveTab("scores")}
-            type="button"
-          >
-            Score Cards
-          </button> */}
 
           {isAdmin && (
             <>
