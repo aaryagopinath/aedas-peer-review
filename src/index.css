@@ -400,15 +400,6 @@ body {
   margin-top: 18px;
 }
 
-.criteria-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
 .criteria-row:first-child {
   border-top: none;
   padding-top: 0;
@@ -686,4 +677,73 @@ body {
   height: 48px;
   font-size: 16px;
   font-weight: 600;
+}
+/* Default card width */
+
+/* Even wider for q3 + comments (optional) */
+.person-question-card.wide {
+  width: min(950px, 194vw);
+}
+
+/* Let label take remaining space but keep buttons close */
+.criteria-text {
+  flex: 0 1 520px; /* ✅ control label width */
+  text-align: left;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+/* buttons group stays compact */
+.criteria-row .choice-row {
+  margin-left: auto; /* pushes button group near label edge */
+  gap: 8px; /* Yes/No spacing */
+}
+
+.criteria-text {
+  /* Change flex: 0 1 520px to flex: 1 */
+  /* This lets the text take only the space it needs relative to the card */
+  flex: 1;
+  text-align: left;
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.criteria-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, buttons right */
+  gap: 16px; /* A reasonable gap between text and buttons */
+  padding: 12px 0; /* Reduced vertical padding */
+  border-top: 1px solid var(--border);
+}
+
+/* Remove margin-left: auto so buttons don't force themselves too far away */
+.criteria-row .choice-row {
+  margin-left: 0;
+  gap: 8px;
+}
+.person-question-card.wide {
+  /* Reduced from 950px to 680px */
+  /* This instantly brings the buttons closer to the text */
+  width: min(680px, 92vw);
+}
+
+.person-question-card {
+  width: min(600px, 92vw);
+  padding: 32px; /* Reduced from 44px to tighten the box */
+}
+
+.person-question-card.medium {
+  width: min(1100px, 92vw); /* The "Goldilocks" width */
+}
+
+/* 4. Tweak the helper text specifically for the medium card */
+.person-question-card.medium .question-help {
+  font-size: 20px; /* Reduced from 17px to help fit text */
+  line-height: 1.5; /* Tighter line height */
+  max-width: 1000px; /* constrain text width slightly */
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--text-secondary);
 }

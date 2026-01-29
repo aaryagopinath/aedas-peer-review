@@ -274,7 +274,7 @@ const Assessment = ({ reviewer }) => {
                 <PersonHeader />
 
                 <h3 className="question-title center">
-                  It was a positive experience and good results?
+                  Did you have a positive experience and good results?
                 </h3>
 
                 <div className="choice-row center">
@@ -298,7 +298,7 @@ const Assessment = ({ reviewer }) => {
             )}
 
             {step === "q3" && (
-              <div className="person-question-card">
+              <div className="person-question-card wide">
                 <PersonHeader />
 
                 <h3 className="question-title center">Why?</h3>
@@ -347,7 +347,7 @@ const Assessment = ({ reviewer }) => {
             )}
 
             {step === "comments" && (
-              <div className="person-question-card comment-card">
+              <div className="person-question-card medium comment-card">
                 <PersonHeader />
 
                 <h3 className="question-title center">
