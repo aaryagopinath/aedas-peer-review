@@ -6,6 +6,7 @@ const Assessment = ({ reviewer }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeCycleId, setActiveCycleId] = useState(null);
   const [step, setStep] = useState("loading"); // loading, q1, q2, q3, comments, finished, no-cycle
+  const [workedWith, setWorkedWith] = useState(null); // q1 highlight
 
   const [currentReview, setCurrentReview] = useState({
     happy: null,
@@ -61,13 +62,22 @@ const Assessment = ({ reviewer }) => {
   };
 
   const handleQ1 = (worked) => {
-    if (!worked) nextPerson();
-    else setStep("q2");
+    setWorkedWith(worked);
+
+    // let user see the tint, then move
+    setTimeout(() => {
+      if (!worked) nextPerson();
+      else setStep("q2");
+    }, 180);
   };
 
   const handleQ2 = (happy) => {
+    // store answer for tint immediately
     setCurrentReview({ happy, answers: [null, null, null] });
-    setStep("q3");
+
+    setTimeout(() => {
+      setStep("q3");
+    }, 180);
   };
 
   const toggleQ3 = (index, val) => {
@@ -159,11 +169,8 @@ const Assessment = ({ reviewer }) => {
     newList.splice(currentIndex, 1);
     setColleagues(newList);
 
-    // ✅ Reset review state so nothing stays highlighted
-    setCurrentReview({
-      happy: null,
-      answers: [null, null, null],
-    });
+    setWorkedWith(null); // ✅ reset Q1 highlight
+    setCurrentReview({ happy: null, answers: [null, null, null] });
 
     setLastInsertedReviewId(null);
     setCommentText("");
@@ -245,14 +252,14 @@ const Assessment = ({ reviewer }) => {
 
                 <div className="choice-row center">
                   <button
-                    className="choice"
+                    className={`choice ${workedWith === true ? "selected" : ""}`}
                     onClick={() => handleQ1(true)}
                     type="button"
                   >
                     Yes
                   </button>
                   <button
-                    className="choice"
+                    className={`choice ${workedWith === false ? "selected-no" : ""}`}
                     onClick={() => handleQ1(false)}
                     type="button"
                   >
