@@ -19,7 +19,7 @@ const Assessment = ({ reviewer }) => {
 
   const [lastInsertedReviewId, setLastInsertedReviewId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-  const COMMENT_MAX = 50;
+  const [bookAnswer, setBookAnswer] = useState(null); // null | true | false
 
   useEffect(() => {
     fetchData();
@@ -47,16 +47,26 @@ const Assessment = ({ reviewer }) => {
     }
 
     setActiveCycleId(cycleId);
+    const { data: feedbackRow, error: fbErr } = await supabase
+      .from("reviewer_cycle_feedback")
+      .select("read_book")
+      .eq("cycle_id", cycleId)
+      .eq("reviewer_name", reviewer.name)
+      .maybeSingle();
+
+    if (fbErr) console.warn("feedback fetch failed", fbErr);
+
+    const readBook = feedbackRow?.read_book; // true/false/null
+    setBookAnswer(readBook ?? null);
 
     const pending = data?.pending || [];
     setColleagues(pending);
     setCurrentIndex(0);
 
-    if (pending.length > 0) {
-      setStep("q1");
-    } else {
-      setStep(data?.final_done ? "finished" : "final-comments");
-    }
+    if (pending.length > 0) setStep("q1");
+    else if (!data?.final_done) setStep("final-comments");
+    else if (!data?.book_done) setStep("book-question");
+    else setStep("finished");
   };
 
   const handleQ1 = async (worked) => {
@@ -171,37 +181,7 @@ const Assessment = ({ reviewer }) => {
     nextPerson(); // ✅ no comments page per employee
   };
 
-  // const submitCommentAndContinue = async () => {
-  //   const text = commentText.trim();
-  //   if (!text) {
-  //     nextPerson();
-  //     return;
-  //   }
-
-  //   try {
-  //     setIsSaving(true);
-
-  //     if (lastInsertedReviewId) {
-  //       const { error } = await supabase
-  //         .from("reviews")
-  //         .update({ comments: text })
-  //         .eq("id", lastInsertedReviewId);
-
-  //       if (error) {
-  //         console.warn("Comment update failed:", error);
-  //       }
-  //     }
-  //   } finally {
-  //     setIsSaving(false);
-  //     nextPerson();
-  //   }
-  // };
-
-  // const skipCommentAndContinue = () => {
-  //   nextPerson();
-  // };
   const skipFinalComment = async () => {
-    // If “Skip” should still mark reviewer as completed, create row with null.
     setIsSaving(true);
 
     const { error } = await supabase.from("reviewer_cycle_feedback").upsert(
@@ -209,18 +189,18 @@ const Assessment = ({ reviewer }) => {
         cycle_id: activeCycleId,
         reviewer_name: reviewer.name,
         final_comment: null,
+        // keep existing read_book value if already set (don’t overwrite)
       },
       { onConflict: "cycle_id,reviewer_name" },
     );
 
     setIsSaving(false);
-
     if (error) {
       console.error(error);
       return;
     }
 
-    setStep("finished");
+    setStep("book-question"); // ✅ instead of finished
   };
 
   const submitFinalComment = async () => {
@@ -238,13 +218,12 @@ const Assessment = ({ reviewer }) => {
     );
 
     setIsSaving(false);
-
     if (error) {
       console.error(error);
       return;
     }
 
-    setStep("finished");
+    setStep("book-question"); // ✅ instead of finished
   };
 
   const nextPerson = () => {
@@ -256,7 +235,7 @@ const Assessment = ({ reviewer }) => {
     setCurrentReview({ happy: null, answers: [null, null, null] });
 
     setLastInsertedReviewId(null);
-    setCommentText("");
+    // setCommentText("");
 
     if (newList.length === 0) setStep("final-comments");
     else {
@@ -264,28 +243,29 @@ const Assessment = ({ reviewer }) => {
       setCurrentIndex(0);
     }
   };
-  // const submitFinalComment = async () => {
-  //   const text = finalCommentText.trim();
 
-  //   setIsSaving(true);
-  //   const { error } = await supabase.from("reviewer_cycle_feedback").upsert(
-  //     {
-  //       cycle_id: activeCycleId,
-  //       reviewer_name: reviewer.name,
-  //       final_comment: text || null,
-  //     },
-  //     { onConflict: "cycle_id,reviewer_name" },
-  //   );
+  const submitBookAnswer = async (answer) => {
+    setBookAnswer(answer); // <-- enables tint immediately
+    setIsSaving(true);
 
-  //   setIsSaving(false);
+    const { error } = await supabase.from("reviewer_cycle_feedback").upsert(
+      {
+        cycle_id: activeCycleId,
+        reviewer_name: reviewer.name,
+        read_book: answer,
+      },
+      { onConflict: "cycle_id,reviewer_name" },
+    );
 
-  //   if (error) {
-  //     console.error(error);
-  //     return;
-  //   }
+    setIsSaving(false);
 
-  //   setStep("finished");
-  // };
+    if (error) {
+      console.error("Saving book answer failed:", error);
+      return;
+    }
+
+    setStep("finished");
+  };
 
   if (step === "loading")
     return (
@@ -546,7 +526,6 @@ const Assessment = ({ reviewer }) => {
                       e.target.value.slice(0, FINAL_COMMENT_MAX),
                     )
                   }
-                  // placeholder="Write your final comments here (optional)…"
                   rows={6}
                 />
 
@@ -583,6 +562,51 @@ const Assessment = ({ reviewer }) => {
                     type="button"
                   >
                     {isSaving ? "Saving…" : "Continue"}
+                  </button>
+                </div>
+              </div>
+            )}
+            {step === "book-question" && (
+              <div className="person-question-card wide">
+                <h3 className="question-title center">
+                  Have you read the book we gave out?
+                </h3>
+
+                <div className="book-strip">
+                  <div className="book-item">
+                    <img
+                      className="book-cover"
+                      src="mindset.png"
+                      alt="Mindset book cover"
+                    />
+                  </div>
+
+                  <div className="book-item">
+                    <img
+                      className="book-cover"
+                      src="Moonwalking.png"
+                      alt="Moonwalking with Einstein book cover"
+                    />
+                  </div>
+                </div>
+
+                <div className="choice-row center" style={{ marginTop: 22 }}>
+                  <button
+                    disabled={isSaving}
+                    className={`choice ${bookAnswer === true ? "selected" : ""}`}
+                    type="button"
+                    onClick={() => submitBookAnswer(true)}
+                  >
+                    Yes
+                  </button>
+
+                  <button
+                    disabled={isSaving}
+                    className={`choice ${bookAnswer === false ? "selected-no" : ""}`}
+                    type="button"
+                    onClick={() => submitBookAnswer(false)}
+                  >
+                    No
                   </button>
                 </div>
               </div>

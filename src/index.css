@@ -747,3 +747,25 @@ body {
   margin-right: auto;
   color: var(--text-secondary);
 }
+.book-strip {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 60px;
+  margin-top: 28px;
+}
+
+.book-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 220px; /* fixed width keeps the pair aligned */
+}
+
+.book-cover {
+  width: 200px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
