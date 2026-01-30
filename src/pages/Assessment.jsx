@@ -29,65 +29,33 @@ const Assessment = ({ reviewer }) => {
   const fetchData = async () => {
     setStep("loading");
 
-    const { data: cycle, error: cycleErr } = await supabase
-      .from("assessment_cycles")
-      .select("id")
-      .eq("status", "Active")
-      .single();
+    const { data, error } = await supabase.rpc("get_assessment_state", {
+      p_reviewer_name: reviewer.name,
+      p_reviewer_employee_id: reviewer.id,
+    });
 
-    if (cycleErr || !cycle) {
+    if (error) {
+      console.error("get_assessment_state failed:", error);
       setStep("no-cycle");
       return;
     }
 
-    setActiveCycleId(cycle.id);
-
-    const { data: reviews } = await supabase
-      .from("reviews")
-      .select("target_employee_id")
-      .eq("cycle_id", cycle.id)
-      .eq("reviewer_name", reviewer.name);
-
-    const doneIds = new Set(
-      reviews ? reviews.map((r) => r.target_employee_id) : [],
-    );
-
-    const { data: employees, error: empErr } = await supabase
-      .from("employees")
-      .select("*")
-      .eq("is_active", true)
-      .neq("id", reviewer.id)
-      .order("name");
-
-    if (empErr) {
-      console.error(empErr);
-      setStep("finished");
+    const cycleId = data?.cycle_id;
+    if (!cycleId) {
+      setStep("no-cycle");
       return;
     }
 
-    const { data: finalRow } = await supabase
-      .from("reviewer_cycle_feedback")
-      .select("id")
-      .eq("cycle_id", cycle.id)
-      .eq("reviewer_name", reviewer.name)
-      .maybeSingle();
+    setActiveCycleId(cycleId);
 
-    const employeesList = employees || [];
-    const pending = employeesList.filter((e) => !doneIds.has(e.id));
-    console.info("Assessment fetchData:", {
-      reviewer: reviewer.name,
-      totalEmployees: employeesList.length,
-      reviewedCount: doneIds.size,
-      pendingCount: pending.length,
-      pendingNames: pending.map((e) => e.name),
-    });
+    const pending = data?.pending || [];
     setColleagues(pending);
     setCurrentIndex(0);
 
     if (pending.length > 0) {
       setStep("q1");
     } else {
-      setStep(finalRow ? "finished" : "final-comments");
+      setStep(data?.final_done ? "finished" : "final-comments");
     }
   };
 
