@@ -19,8 +19,11 @@ const Assessment = ({ reviewer }) => {
 
   const [lastInsertedReviewId, setLastInsertedReviewId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [bookAnswer, setBookAnswer] = useState(null); // null | true | false
-
+  // Replace the old [bookAnswer, setBookAnswer] line with:
+  const [bookAnswers, setBookAnswers] = useState({
+    mindset: null,
+    moonwalking: null,
+  });
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,26 +49,37 @@ const Assessment = ({ reviewer }) => {
       return;
     }
 
+    // ... inside fetchData ...
     setActiveCycleId(cycleId);
+
     const { data: feedbackRow, error: fbErr } = await supabase
       .from("reviewer_cycle_feedback")
-      .select("read_book")
+      .select("read_mindset, read_moonwalking") // <--- Select new columns
       .eq("cycle_id", cycleId)
       .eq("reviewer_name", reviewer.name)
       .maybeSingle();
 
     if (fbErr) console.warn("feedback fetch failed", fbErr);
 
-    const readBook = feedbackRow?.read_book; // true/false/null
-    setBookAnswer(readBook ?? null);
+    // Set state for both books
+    setBookAnswers({
+      mindset: feedbackRow?.read_mindset ?? null,
+      moonwalking: feedbackRow?.read_moonwalking ?? null,
+    });
 
+    // Logic to determine which step to show
     const pending = data?.pending || [];
     setColleagues(pending);
     setCurrentIndex(0);
 
     if (pending.length > 0) setStep("q1");
     else if (!data?.final_done) setStep("final-comments");
-    else if (!data?.book_done) setStep("book-question");
+    // Check if BOTH books have an answer (true or false, just not null)
+    else if (
+      feedbackRow?.read_mindset == null ||
+      feedbackRow?.read_moonwalking == null
+    )
+      setStep("book-question");
     else setStep("finished");
   };
 
@@ -243,16 +257,21 @@ const Assessment = ({ reviewer }) => {
       setCurrentIndex(0);
     }
   };
+  // Helper to update state instantly for UI feedback
+  const handleBookClick = (bookKey, val) => {
+    setBookAnswers((prev) => ({ ...prev, [bookKey]: val }));
+  };
 
-  const submitBookAnswer = async (answer) => {
-    setBookAnswer(answer); // <-- enables tint immediately
+  // Final submit function
+  const submitBooks = async () => {
     setIsSaving(true);
 
     const { error } = await supabase.from("reviewer_cycle_feedback").upsert(
       {
         cycle_id: activeCycleId,
         reviewer_name: reviewer.name,
-        read_book: answer,
+        read_mindset: bookAnswers.mindset,
+        read_moonwalking: bookAnswers.moonwalking,
       },
       { onConflict: "cycle_id,reviewer_name" },
     );
@@ -260,12 +279,34 @@ const Assessment = ({ reviewer }) => {
     setIsSaving(false);
 
     if (error) {
-      console.error("Saving book answer failed:", error);
+      console.error("Saving books failed:", error);
       return;
     }
 
     setStep("finished");
   };
+  // const submitBookAnswer = async (answer) => {
+  //   setBookAnswer(answer); // <-- enables tint immediately
+  //   setIsSaving(true);
+
+  //   const { error } = await supabase.from("reviewer_cycle_feedback").upsert(
+  //     {
+  //       cycle_id: activeCycleId,
+  //       reviewer_name: reviewer.name,
+  //       read_book: answer,
+  //     },
+  //     { onConflict: "cycle_id,reviewer_name" },
+  //   );
+
+  //   setIsSaving(false);
+
+  //   if (error) {
+  //     console.error("Saving book answer failed:", error);
+  //     return;
+  //   }
+
+  //   setStep("finished");
+  // };
 
   if (step === "loading")
     return (
@@ -569,44 +610,81 @@ const Assessment = ({ reviewer }) => {
             {step === "book-question" && (
               <div className="person-question-card wide">
                 <h3 className="question-title center">
-                  Have you read the book we gave out?
+                  Have you read the books we gave out?
                 </h3>
 
-                <div className="book-strip">
-                  <div className="book-item">
+                <div className="books-grid">
+                  {/* --- Book 1: Mindset --- */}
+                  <div className="book-column">
                     <img
                       className="book-cover"
-                      src="mindset.png"
-                      alt="Mindset book cover"
+                      src="mindset.png" // Update with your actual path
+                      alt="Mindset"
                     />
+                    <div className="book-label">Mindset</div>
+
+                    <div className="choice-row center">
+                      <button
+                        type="button"
+                        className={`choice ${bookAnswers.mindset === true ? "selected" : ""}`}
+                        onClick={() => handleBookClick("mindset", true)}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        type="button"
+                        className={`choice ${bookAnswers.mindset === false ? "selected-no" : ""}`}
+                        onClick={() => handleBookClick("mindset", false)}
+                      >
+                        No
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="book-item">
+                  {/* --- Book 2: Moonwalking --- */}
+                  <div className="book-column">
                     <img
                       className="book-cover"
-                      src="Moonwalking.png"
-                      alt="Moonwalking with Einstein book cover"
+                      src="Moonwalking.png" // Update with your actual path
+                      alt="Moonwalking"
                     />
+                    <div className="book-label">Moonwalking with Einstein</div>
+
+                    <div className="choice-row center">
+                      <button
+                        type="button"
+                        className={`choice ${bookAnswers.moonwalking === true ? "selected" : ""}`}
+                        onClick={() => handleBookClick("moonwalking", true)}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        type="button"
+                        className={`choice ${bookAnswers.moonwalking === false ? "selected-no" : ""}`}
+                        onClick={() => handleBookClick("moonwalking", false)}
+                      >
+                        No
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                <div className="choice-row center" style={{ marginTop: 22 }}>
+                {/* Finish Button */}
+                <div
+                  className="actions-row"
+                  style={{ justifyContent: "center", marginTop: 32 }}
+                >
                   <button
-                    disabled={isSaving}
-                    className={`choice ${bookAnswer === true ? "selected" : ""}`}
-                    type="button"
-                    onClick={() => submitBookAnswer(true)}
+                    className="btn btn-primary"
+                    onClick={submitBooks}
+                    // Disable until BOTH books have an answer (true or false)
+                    disabled={
+                      isSaving ||
+                      bookAnswers.mindset === null ||
+                      bookAnswers.moonwalking === null
+                    }
                   >
-                    Yes
-                  </button>
-
-                  <button
-                    disabled={isSaving}
-                    className={`choice ${bookAnswer === false ? "selected-no" : ""}`}
-                    type="button"
-                    onClick={() => submitBookAnswer(false)}
-                  >
-                    No
+                    {isSaving ? "Saving..." : "Finish Assessment"}
                   </button>
                 </div>
               </div>

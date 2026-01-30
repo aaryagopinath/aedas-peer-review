@@ -747,25 +747,40 @@ body {
   margin-right: auto;
   color: var(--text-secondary);
 }
-.book-strip {
+/* Layout for the two books */
+.books-grid {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  gap: 60px;
-  margin-top: 28px;
+  gap: 48px; /* Space between the two book columns */
+  margin-top: 24px;
 }
 
-.book-item {
+.book-column {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 220px; /* fixed width keeps the pair aligned */
+  width: 240px; /* Fixed width to align buttons evenly */
 }
 
 .book-cover {
-  width: 200px;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
-  object-fit: cover;
+  height: 180px;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+}
+
+.book-label {
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+  height: 40px; /* Force height so buttons align if titles wrap */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure buttons fit inside the column */
+.book-column .choice-row {
+  gap: 8px;
 }
