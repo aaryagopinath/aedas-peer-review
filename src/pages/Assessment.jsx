@@ -301,10 +301,7 @@ const Assessment = ({ reviewer }) => {
     return (
       <div className="page">
         <div className="card empty-state">
-          <h2 style={{ margin: "0 0 8px" }}>All done!</h2>
-          <div style={{ color: "var(--text-muted)" }}>
-            You have reviewed everyone in your queue.
-          </div>
+          <h2 style={{ margin: "0 0 8px" }}>Thank you</h2>
         </div>
       </div>
     );
