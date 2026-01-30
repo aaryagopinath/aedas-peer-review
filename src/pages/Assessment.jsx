@@ -91,14 +91,52 @@ const Assessment = ({ reviewer }) => {
     }
   };
 
-  const handleQ1 = (worked) => {
+  const handleQ1 = async (worked) => {
     setWorkedWith(worked);
 
-    // let user see the tint, then move
-    setTimeout(() => {
-      if (!worked) nextPerson();
-      else setStep("q2");
-    }, 180);
+    // If they didn't work with the colleague, persist it immediately.
+    if (!worked) {
+      const p = colleagues[currentIndex];
+      if (!p || !activeCycleId) return;
+
+      try {
+        setIsSaving(true);
+
+        const { error } = await supabase.from("reviews").upsert(
+          {
+            cycle_id: activeCycleId,
+            target_employee_id: p.id,
+            reviewer_name: reviewer.name,
+            worked_with: false,
+
+            // optional: make scores explicit 0
+            work_again: null,
+            attitude_flag: null,
+            comm_flag: null,
+            tech_flag: null,
+            tmp_score: 0,
+            com_score: 0,
+            res_score: 0,
+            total_score: 0,
+          },
+          { onConflict: "cycle_id,reviewer_name,target_employee_id" },
+        );
+
+        if (error) {
+          console.error("Saving Q1=No failed:", error);
+          return;
+        }
+
+        nextPerson(); // move on
+      } finally {
+        setIsSaving(false);
+      }
+
+      return;
+    }
+
+    // If worked == true, continue normal flow
+    setTimeout(() => setStep("q2"), 180);
   };
 
   const handleQ2 = (happy) => {
@@ -367,6 +405,7 @@ const Assessment = ({ reviewer }) => {
 
                 <div className="choice-row center">
                   <button
+                    disabled={isSaving}
                     className={`choice ${workedWith === true ? "selected" : ""}`}
                     onClick={() => handleQ1(true)}
                     type="button"
@@ -374,6 +413,7 @@ const Assessment = ({ reviewer }) => {
                     Yes
                   </button>
                   <button
+                    disabled={isSaving}
                     className={`choice ${workedWith === false ? "selected-no" : ""}`}
                     onClick={() => handleQ1(false)}
                     type="button"
