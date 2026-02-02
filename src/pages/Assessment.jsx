@@ -357,7 +357,7 @@ const Assessment = ({ reviewer }) => {
       <>
         <img className="person-avatar-lg" src={imgSrc} alt={p.name} />
         <h2 className="person-name-lg">{p.name}</h2>
-        <div className="person-role-lg">{p.role}</div>
+        {/* <div className="person-role-lg">{p.role}</div> */}
         <div className="question-divider" />
       </>
     );
